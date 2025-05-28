@@ -1,6 +1,7 @@
 # Код файла the_snake.py
 import sys
 from random import choice, randint
+
 import pygame as pg
 
 # Константы для размеров поля и сетки:
