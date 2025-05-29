@@ -41,10 +41,10 @@ pg.display.set_caption('Змейка')
 clock = pg.time.Clock()
 
 # Координаты центра:
-screen_center = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
+SCREEN_CENTER = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
 
 # Словарь для направления и клавиш:
-DIRECTION_DICTIONARY = {
+DIRECTION = {
     (LEFT, pg.K_UP): UP,
     (RIGHT, pg.K_UP): UP,
     (LEFT, pg.K_DOWN): DOWN,
@@ -59,7 +59,7 @@ DIRECTION_DICTIONARY = {
 class GameObject:
     """Класс, который описывает все объекты."""
 
-    def __init__(self, position=screen_center, body_color=None) -> None:
+    def __init__(self, position=SCREEN_CENTER, body_color=None) -> None:
         """Инициализирующий метод."""
         self.position = position
         self.body_color = body_color
@@ -79,9 +79,10 @@ class Apple(GameObject):
     """Класс описывает яблоко и операции над ним."""
 
     def __init__(self,
-                 position=screen_center,
+                 position=SCREEN_CENTER,
+                 body_color=APPLE_COLOR,
                  grid_busy=None):
-        super().__init__(position, APPLE_COLOR)
+        super().__init__(position, body_color)
         self.randomize_position(grid_busy)
 
     def randomize_position(self, grid_busy=None):
@@ -101,10 +102,9 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Класс описывает змейку и операции над ней."""
 
-    def __init__(self, position=screen_center):
+    def __init__(self, position=SCREEN_CENTER, body_color=SNAKE_COLOR):
         """Инициализирует начальное состояние змейки."""
-        super().__init__(position, SNAKE_COLOR)
-        self.body_color = SNAKE_COLOR
+        super().__init__(position, body_color)
         self.last = None
         self.direction = RIGHT
         self.next_direction = None
@@ -148,9 +148,8 @@ class Snake(GameObject):
         """Сбрасывает змейку в начальное состояние."""
         self.last = None
         self.next_direction = None
-        self.positions = [screen_center]
+        self.positions = [self.position]
         self.direction = choice([RIGHT, LEFT, UP, DOWN])
-        screen.fill(BOARD_BACKGROUND_COLOR)  # Заполним фоновым цветом.
 
 
 def handle_keys(game_object):
@@ -163,7 +162,7 @@ def handle_keys(game_object):
             if event.key == pg.K_ESCAPE:  # Выходим из игры по нажатию Escape
                 pg.quit()
                 sys.exit()
-            game_object.next_direction = DIRECTION_DICTIONARY.get(
+            game_object.next_direction = DIRECTION.get(
                 (game_object.direction, event.key), game_object.direction)
 
 
@@ -175,6 +174,7 @@ def main():
 
     while True:
         clock.tick(SPEED)  # Установим скорость игры.
+        screen.fill(BOARD_BACKGROUND_COLOR)  # Заполним фоновым цветом.
         handle_keys(snake)
         snake.update_direction()  # Обновляем директорию змейки.
         snake.move()  # Запускаем движение замейки.
