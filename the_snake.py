@@ -44,7 +44,7 @@ clock = pg.time.Clock()
 SCREEN_CENTER = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
 
 # Словарь для направления и клавиш:
-DIRECTION = {
+DIRECTIONS = {
     (LEFT, pg.K_UP): UP,
     (RIGHT, pg.K_UP): UP,
     (LEFT, pg.K_DOWN): DOWN,
@@ -162,7 +162,7 @@ def handle_keys(game_object):
             if event.key == pg.K_ESCAPE:  # Выходим из игры по нажатию Escape
                 pg.quit()
                 sys.exit()
-            game_object.next_direction = DIRECTION.get(
+            game_object.next_direction = DIRECTIONS.get(
                 (game_object.direction, event.key), game_object.direction)
 
 
@@ -174,7 +174,6 @@ def main():
 
     while True:
         clock.tick(SPEED)  # Установим скорость игры.
-        screen.fill(BOARD_BACKGROUND_COLOR)  # Заполним фоновым цветом.
         handle_keys(snake)
         snake.update_direction()  # Обновляем директорию змейки.
         snake.move()  # Запускаем движение замейки.
@@ -185,6 +184,7 @@ def main():
         # Цикл ниже проверяет столкновение змейки с собой.
         elif snake.get_head_position() in snake.positions[1:]:
             snake.reset()
+            screen.fill(BOARD_BACKGROUND_COLOR)  # Заполним фоновым цветом.
             apple.randomize_position(snake.positions)
         apple.draw()  # Отрисовываем яблоко.
         snake.draw()  # Отрисовываем змейку.
